@@ -3,7 +3,8 @@
 # july 11
 # testing the BBP pi formula
 from decimal import *
-getcontext().prec = 1000 # sets precision
+DIGITS = 10000000
+getcontext().prec = DIGITS + 100 # sets precision
 
 def summand (k) -> Decimal:
     a = Decimal(1) / Decimal(16 ** k)
@@ -14,9 +15,13 @@ def summand (k) -> Decimal:
     return a * (b - c - d - e)
 
 def summation (upper_bound):
-    res = Decimal(0)
-    for i in range (0, upper_bound+1):
-        res += summand(i)
-    return res
+    prev = Decimal(0)
+    cur = prev
+    for i in range (0, upper_bound):
+        cur += summand(i)
+        if cur - prev < Decimal(1) / Decimal(DIGITS+10): return cur
+        prev = cur
+        # print("{}: {}".format(i, cur - prev))
+    return -1
 
-print(summation(10))
+print(summation(100))
